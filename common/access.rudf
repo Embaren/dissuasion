@@ -89,7 +89,7 @@
 				break;
 			case 'tu' :
 				groupId='tu'+id;
-				objectId='tubes'+id;
+				objectId='tube'+id;
 				r="300";
 				break;
 		}
@@ -102,7 +102,6 @@
 		}
 		range = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 		range.setAttribute("id", "range");
-		console.log(objectBox.x+objectBox.width/2);
 		range.setAttribute("cx", Math.round((objectBox.x+objectBox.width/2+groupTransform.e)).toString());
 		range.setAttribute("cy", Math.round((objectBox.y+objectBox.height/2+groupTransform.f)).toString());
 		range.setAttribute("r", r);

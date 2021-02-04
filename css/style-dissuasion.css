@@ -65,7 +65,11 @@ button{
 	stroke: #ffffff;
 	fill-opacity:100;
 }
-
+#tubes g path:hover{
+	fill: #ffffff;
+	stroke: #ffffff;
+	fill-opacity:100;
+}
 #range {
 	fill: url(#rangeGradient);
 	stroke: #318ce7;
