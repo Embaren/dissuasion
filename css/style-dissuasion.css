@@ -60,6 +60,36 @@ button{
 	fill-opacity: 1;
 }
 
+#worldMap g g path.empty{
+	fill:#000000;
+	fill-opacity:1;
+	stroke: #ff0000;
+}
+/* #worldMap g g path.empty:hover{ */
+	/* fill:#4ed34e; */
+	/* fill-opacity:0.75294119; */
+	/* stroke: #00ff00; */
+/* } */
+
+#worldMap g g path.active{
+	fill:#9cc8f3;
+	stroke: #00ff00;
+}
+#worldMap g g path.active:hover{
+	fill:#4ed34e;
+	fill-opacity:0.75294119;
+	stroke: #00ff00;
+}
+
+#worldMap g g path.alerted{
+	fill:#9cc8f3;
+	fill-opacity:0.75294119;
+}
+#worldMap g g path.alerted:hover{
+	fill:#9cc8f3;
+	fill-opacity:1;
+}
+
 #tubes g path{
 	fill: #000000;
 	stroke: #ffffff;
@@ -71,9 +101,21 @@ button{
 	fill-opacity:100;
 }
 #range {
+	pointer-events : none;
 	fill: url(#rangeGradient);
 	stroke: #318ce7;
-	/* fill-opacity: 0.2; */
+}
+#alertedRange {
+	pointer-events : none;
+	fill: url(#rangeAlertedGradient);
+	stroke: #318ce7;
+	stroke-opacity: 0.5;
+}
+.activatedRange {
+	pointer-events : none;
+	fill: url(#rangeActivatedGradient);
+	stroke: #00ff00;
+	stroke-opacity: 0.5;
 }
 path:hover{
 	fill: #cccccc;
@@ -123,19 +165,15 @@ path.destroyed{
 #wrapper div{
 	display:flex;
 	flex-flow: column wrap;
-	align-self: space-between;
 	justify-content: space-between;
-}
-#selection {
-	flex-basis:40%;
 }
 #selection button{
 	margin-top:1.75vh;
 	padding-top:0.1%
 }
-#text{
+.text{
 	border:none;
-	
+	margin-bottom:1.5vh;
 }
 #ennemies {
 }

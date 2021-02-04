@@ -3,11 +3,16 @@
 	<div id="map-div">
 	</div>
 	<div id="wrapper">
-		<div id="selection">
-			<div id="text">
-				<text><b>PAYS</b></text><br><text class="label" id="country-name" x="10" y="390">Aucun pays sélectionné</text>
+		<div class="selection">
+			<div id="selectParameters">
+				<div class="text">
+					<text><b>PAYS</b></text><text class="label" id="country-name" x="10" y="390">Aucun pays sélectionné</text>
+				</div>
+				<div class="text">
+					<text><b>LANCEUR</b></text><text class="label" id="launcher-name" x="10" y="390">Aucun lanceur sélectionné</text>
+				</div>
 			</div>
-			<button id="selectTarget type="button" onClick="addTarget()">Cibler ce pays</button>
+			<button id="selectTarget type="button" onClick="addTarget()">Programmer le tir</button>
 		</div>
 		<div id="ennemies">
 			<text><b>PAYS CIBLES</b></text>
@@ -21,7 +26,8 @@
 	$.get("ressources/world.rudf", function (data) {
 		$("#map-div").prepend(data);
 	});
-	var target=''
+	var target='';
+	var launcher=['',0];
 	function displayName(id='') {
 		if (id==''){
 			try{
@@ -55,27 +61,68 @@
 		displayName();
 	}
 	function addTarget() {
-		if (target!=''){
-			document.getElementsByClassName('target')[0].classList.remove('target');
-			document.getElementById(target).classList.add('ennemy');
-			$("#targets").append('<li>'+document.getElementById(target).dataset.name+'</li>')
-			target='';
-			displayName();
+		if (target!='' && launcher[0]!=''){
+			
+			objectBox = document.getElementById(launcher[0]).getBBox();
+			try{
+				groupTransform = document.getElementById(launcher[0]).parentNode.transform.baseVal[0].matrix;
+			}
+			catch{
+				groupTransform = { e:0,f:0}
+			}
+			
+			coords=[(objectBox.y+objectBox.height/2+groupTransform.f),(objectBox.x+objectBox.width/2+groupTransform.e)]
+			
+			tg=document.getElementsByClassName('target')[0];
+			minDist=Infinity;
+			
+			
+			for (let j=1; j<tg.getTotalLength();j++){
+				minDist=Math.min(minDist,Math.sqrt((coords[1]-tg.getPointAtLength(j).x)**2+(coords[0]-tg.getPointAtLength(j).y)**2));
+				if (minDist<=launcher[1]){
+					break;
+				}
+			}
+			if (minDist<=launcher[1]){
+				document.getElementsByClassName('target')[0].classList.remove('target');
+				document.getElementsByClassName('alerted')[0].classList.remove('alerted');
+				document.getElementById(target).classList.add('ennemy');
+				document.getElementById(launcher[0]).classList.add('active');
+				$("#targets").append('<li>'+document.getElementById(target).dataset.name+'</li>');
+				$('#alertedRange').each(function(){$(this).removeAttr('id');$(this).addClass('activatedRange');});
+				target='';
+				launcher=['',0];
+				displayName();
+				displayRange();
+			}
+			
 		}
 	}
 	function hitTargets() {
 		$('.ennemy').each(function(){$(this).removeClass('target');$(this).addClass('destroyed');});
+		$('.active').each(function(){$(this).removeClass('active');$(this).addClass('empty');});
+		$('.activatedRange').each(function(){$(this).remove();});
 		$("#targets").empty();
-		target='';
 		displayName();
+		displayRange();
 	}
-	function displayRange(type='Empty',id){
+	function displayRange(type='',id){
 		groupId='';
 		objectId='';
 		r='0';
 		switch (type){
-			case 'Empty':
-				document.getElementById('range').remove();
+			case '':
+				try{
+					document.getElementById('range').remove();
+				}
+				catch{
+				}
+				try{
+					document.getElementById('launcher-name').firstChild.data = document.getElementById(launcher[0]).dataset.name;
+				}
+				catch{
+					document.getElementById('launcher-name').firstChild.data = "Aucun lanceur sélectionné";
+				}
 				return 0;
 			case 'sub' :
 				groupId='sub'+id;
@@ -93,6 +140,15 @@
 				r="300";
 				break;
 		}
+		
+		if (document.getElementById(objectId).classList.contains('empty')){
+			document.getElementById('launcher-name').firstChild.data = document.getElementById(objectId).dataset.name + " (A court d'ogives)";
+			return 0;
+		}
+		else{
+			document.getElementById('launcher-name').firstChild.data = document.getElementById(objectId).dataset.name;
+		}
+		
 		objectBox = document.getElementById(objectId).getBBox();
 		try{
 			groupTransform = document.getElementById(groupId).transform.baseVal[0].matrix;
@@ -106,5 +162,43 @@
 		range.setAttribute("cy", Math.round((objectBox.y+objectBox.height/2+groupTransform.f)).toString());
 		range.setAttribute("r", r);
 		document.getElementById('worldMap').insertBefore(range,document.getElementById('submarines'));
+	}
+	
+	function setLauncher(type,id) {
+		try{
+			document.getElementsByClassName('alerted')[0].classList.remove('alerted');
+		}
+		catch{}
+		
+		try{
+			document.getElementById('alertedRange').remove();
+		}
+		catch{}
+		
+		switch (type){
+			case 'sub' :
+				objectId='submarine'+id;
+				r="250";
+				break;
+			case 'AC' :
+				objectId='aircraftCarrier'+id;
+				r="400";
+				break;
+			case 'tu' :
+				objectId='tube'+id;
+				r="300";
+				break;
+		}
+		
+		
+		if (document.getElementById(objectId).classList.contains('active')||document.getElementById(objectId).classList.contains('empty')){
+			launcher=['',0];
+		}
+		else{
+			document.getElementById(objectId).classList.add('alerted');
+			launcher=[objectId,r];
+			$('#range').each(function(){$(this).removeAttr('id');$(this).attr('id','alertedRange');});
+		}
+		displayRange();
 	}
 </script>
