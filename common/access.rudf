@@ -1,0 +1,62 @@
+<h1>INTERFACE NUCLEAIRE STRATEGIQUE</h1>
+<div id="content">
+	<div id="map-div">
+	</div>
+	<div id="wrapper">
+		<div id="selection">
+			<div id="text">
+				<text><b>PAYS</b></text><br><text class="label" id="country-name" x="10" y="390">Aucun pays sélectionné</text>
+			</div>
+			<button id="selectTarget type="button" onClick="addTarget()">Cibler ce pays</button>
+		</div>
+		<div id="ennemies">
+			<text><b>PAYS CIBLES</b></text>
+			<ul id="targets">
+			</ul>
+			<button id="confirmTargets" type="button" onClick="hitTargets()">Confirmer la frappe</button>
+		</div>
+	</div>
+</div>
+<script>
+	$.get("ressources/world.rudf", function (data) {
+		$("#map-div").prepend(data);
+	});
+	var target=''
+	function displayName(id='') {
+		if (id==''){
+			try{
+				document.getElementById('country-name').firstChild.data = document.getElementById(target).dataset.name;
+			}
+			catch{}
+		}
+		else{
+			document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name;
+		}
+	}
+	function setTarget(id) {
+		try{
+			document.getElementsByClassName('target')[0].classList.remove('target');
+		}
+		catch{}
+		if (document.getElementById(id).classList.contains('ennemy')||document.getElementById(id).classList.contains('destroyed')){
+			target=''
+		}
+		else{
+			document.getElementById(id).classList.add('target');
+			target=id;
+		}
+		displayName();
+	}
+	function addTarget() {
+		if (target!=''){
+			document.getElementsByClassName('target')[0].classList.remove('target');
+			document.getElementById(target).classList.add('ennemy');
+			$("#targets").append('<li>'+document.getElementById(target).dataset.name+'</li>')
+			target='';
+		}
+	}
+	function hitTargets() {
+		$('.ennemy').each(function(){$(this).removeClass('target');$(this).addClass('destroyed');});
+		$("#targets").empty();
+	}
+</script>

@@ -1,0 +1,108 @@
+body{
+	background-color:#191919;
+	color:white;
+	font-family:"Consolas";
+	text-align:center;
+	font-size:1.75vh;
+}
+div{
+	border:1px solid;
+	border-color:#ffffff;
+}
+ul{
+	list-style:none;
+}
+h1{
+	margin-top:4vh;
+	margin-top:4vh;
+	font-size:4vw
+}
+form{
+	border:1px solid;
+	border-color:#ffffff;
+}
+#map-div svg {
+	width: 100%;
+	height: auto;
+	max-height:65vh;
+	min-width:200px;
+}
+path {
+	fill: #000000;
+	fill-rule: evenodd;
+	stroke-width: 1.0015748;
+	stroke-linejoin:round;
+	stroke-miterlimit: 4;
+	stroke-dasharray: none;
+	stroke: #ffffff;
+	stroke-opacity: 1;
+	fill-opacity: 0.50196081;
+}
+button{
+	min-height:3vh;
+	font-size:2vh
+}
+path:hover{
+	fill: #cccccc;
+	fill-opacity: 0.5;
+}
+path#RUDF{
+	fill:#318ce7;
+	fill-opacity:0.75294119;
+}
+path#RUDF:hover{
+	fill-opacity:1;
+}
+path.target{
+	fill:#f39696;
+	fill-opacity:0.75294119;
+}
+path.target:hover{
+	fill-opacity:1;
+}
+path.ennemy{
+	fill:#e73131;
+	fill-opacity:0.75294119;
+}
+path.ennemy:hover{
+	fill-opacity:1;
+}
+path.destroyed{
+	fill:#000000;
+	fill-opacity:1;
+	stroke: #000000;
+}
+
+#content{
+	display : flex;
+	flex-flow: line wrap;
+	width:100%;
+	flex-wrap: wrap
+}
+#content div{
+	width:100%;
+}
+#wrapper {
+	display : flex;
+	align-content:space-around;
+	height:100%;
+}
+#wrapper div{
+	display:flex;
+	flex-flow: column wrap;
+	align-self: space-between;
+	justify-content: space-between;
+}
+#selection {
+	flex-basis:40%;
+}
+#selection button{
+	margin-top:1.75vh;
+	padding-top:0.1%
+}
+#text{
+	border:none;
+	
+}
+#ennemies {
+}
