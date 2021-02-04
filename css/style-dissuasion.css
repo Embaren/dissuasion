@@ -48,6 +48,29 @@ button{
 	min-height:3vh;
 	font-size:2vh
 }
+
+#submarines g path, #aircraftCarriers g path{
+	fill: #ffffff;
+	stroke: #318ce7;
+	fill-opacity:0;
+}
+#submarines g path:hover, #aircraftCarriers g path:hover{
+	fill: #ffffff;
+	stroke: #318ce7;
+	fill-opacity: 1;
+}
+
+#tubes g path{
+	fill: #000000;
+	stroke: #ffffff;
+	fill-opacity:100;
+}
+
+#range {
+	fill: url(#rangeGradient);
+	stroke: #318ce7;
+	/* fill-opacity: 0.2; */
+}
 path:hover{
 	fill: #cccccc;
 	fill-opacity: 0.5;

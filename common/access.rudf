@@ -69,4 +69,43 @@
 		target='';
 		displayName();
 	}
+	function displayRange(type='Empty',id){
+		groupId='';
+		objectId='';
+		r='0';
+		switch (type){
+			case 'Empty':
+				document.getElementById('range').remove();
+				return 0;
+			case 'sub' :
+				groupId='sub'+id;
+				objectId='submarine'+id;
+				r="250";
+				break;
+			case 'AC' :
+				groupId='AC'+id;
+				objectId='aircraftCarrier'+id;
+				r="400";
+				break;
+			case 'tu' :
+				groupId='tu'+id;
+				objectId='tubes'+id;
+				r="300";
+				break;
+		}
+		objectBox = document.getElementById(objectId).getBBox();
+		try{
+			groupTransform = document.getElementById(groupId).transform.baseVal[0].matrix;
+		}
+		catch{
+			groupTransform = { e:0,f:0}
+		}
+		range = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		range.setAttribute("id", "range");
+		console.log(objectBox.x+objectBox.width/2);
+		range.setAttribute("cx", Math.round((objectBox.x+objectBox.width/2+groupTransform.e)).toString());
+		range.setAttribute("cy", Math.round((objectBox.y+objectBox.height/2+groupTransform.f)).toString());
+		range.setAttribute("r", r);
+		document.getElementById('worldMap').insertBefore(range,document.getElementById('submarines'));
+	}
 </script>
