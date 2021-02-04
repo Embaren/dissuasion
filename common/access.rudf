@@ -28,7 +28,7 @@
 				document.getElementById('country-name').firstChild.data = document.getElementById(target).dataset.name;
 			}
 			catch{
-				document.getElementById('country-name').firstChild.data = "Aucun pays sélectionné"
+				document.getElementById('country-name').firstChild.data = "Aucun pays sélectionné";
 			}
 		}
 		else{
@@ -60,5 +60,6 @@
 	function hitTargets() {
 		$('.ennemy').each(function(){$(this).removeClass('target');$(this).addClass('destroyed');});
 		$("#targets").empty();
+		displayName();
 	}
 </script>
