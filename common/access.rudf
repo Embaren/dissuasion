@@ -27,7 +27,9 @@
 			try{
 				document.getElementById('country-name').firstChild.data = document.getElementById(target).dataset.name;
 			}
-			catch{}
+			catch{
+				document.getElementById('country-name').firstChild.data = "Aucun pays sélectionné"
+			}
 		}
 		else{
 			document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name;
