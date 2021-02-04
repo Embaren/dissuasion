@@ -21,6 +21,12 @@ form{
 	border:1px solid;
 	border-color:#ffffff;
 }
+
+#logo{
+	max-height:40vh;
+	max-width:80vw;
+}
+
 #map-div svg {
 	width: 100%;
 	height: auto;
