@@ -4,11 +4,17 @@
 <html lang="fr">
 <head>
 	<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+	<script src="js/nounours.js"></script>
 	<meta charset="utf-8">
 	<meta name="description" content="Dissuasion, prévention, riposte: mettez en oeuvre sur DISSUASION.RUDF.EU toutes les capacités de l'arme nucléaire">
-	<meta name="author" content="Emile Barbier--Renard">	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">	<link rel="stylesheet" href="/css/style-dissuasion.css"><style></style>	<title>Accueil | Arme nucléaire</title>
+	<meta name="author" content="Emile Barbier--Renard">	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="stylesheet" href="/css/style-dissuasion.css"><style></style>	<title>Accueil | Arme nucléaire</title>
 </head>
 <body>
-	<div class="Maintenance"><h1>SITE EN CONSTRUCTION</h1></div>
+	<form onsubmit="return false">
+		<input type="password" id="pwd" name="password" />
+		<input onclick="getCodes(this)" type="submit" value="Connexion">
+	</form>
 </body>
 </html>
