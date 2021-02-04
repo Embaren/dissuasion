@@ -32,7 +32,12 @@
 			}
 		}
 		else{
-			document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name;
+			if (document.getElementById(id).classList.contains('destroyed')){
+				document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name + ' (Inhabitable)';
+			}
+			else{
+				document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name;
+			}
 		}
 	}
 	function setTarget(id) {
