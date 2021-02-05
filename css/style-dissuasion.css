@@ -132,6 +132,9 @@ button{
 	stroke-linejoin:round;
 	
 }
+image {
+	pointer-events : none;
+}
 path:hover{
 	fill: #cccccc;
 	fill-opacity: 0.5;
