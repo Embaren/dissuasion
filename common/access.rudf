@@ -91,8 +91,13 @@
 				arrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
 				arrow.setAttribute("class", "targetArrow");
 				
-				
-				arrow.setAttribute("d","M"+coords[0]+" "+coords[1]+" A " + centerDist/2+" "+centerDist/4+" "+Math.round(Math.atan2((coords[3]-coords[1]),(coords[2]-coords[0]))*180/Math.PI)+" "+0+" "+0+coords[2]+" "+coords[3]);
+				if (coords[2]>coords[0]){
+					direction=1;
+				}
+				else{
+					direction=0;
+				}
+				arrow.setAttribute("d","M"+coords[0]+" "+coords[1]+" A " + centerDist/2+" "+centerDist/4+" "+Math.round(Math.atan2((coords[3]-coords[1]),(coords[2]-coords[0]))*180/Math.PI)+" "+0+" "+direction+coords[2]+" "+coords[3]);
 				
 				document.getElementById('worldMap').append(arrow);
 				
