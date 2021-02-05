@@ -71,19 +71,31 @@
 				groupTransform = { e:0,f:0}
 			}
 			
-			coords=[(objectBox.y+objectBox.height/2+groupTransform.f),(objectBox.x+objectBox.width/2+groupTransform.e)]
+			countryBox=document.getElementsByClassName('target')[0].getBBox();
+			coords=[(objectBox.x+objectBox.width/2+groupTransform.e),(objectBox.y+objectBox.height/2+groupTransform.f),(countryBox.x+countryBox.width/2),(countryBox.y+countryBox.height/2)];
+			
+			centerDist=Math.sqrt((coords[0]-coords[2])**2+(coords[1]-coords[3])**2);
 			
 			tg=document.getElementsByClassName('target')[0];
 			minDist=Infinity;
 			
 			
 			for (let j=1; j<tg.getTotalLength();j++){
-				minDist=Math.min(minDist,Math.sqrt((coords[1]-tg.getPointAtLength(j).x)**2+(coords[0]-tg.getPointAtLength(j).y)**2));
+				minDist=Math.min(minDist,Math.sqrt((coords[0]-tg.getPointAtLength(j).x)**2+(coords[1]-tg.getPointAtLength(j).y)**2));
 				if (minDist<=launcher[1]){
 					break;
 				}
 			}
 			if (minDist<=launcher[1]){
+				
+				arrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				arrow.setAttribute("class", "targetArrow");
+				
+				
+				arrow.setAttribute("d","M"+coords[0]+" "+coords[1]+" A " + centerDist/2+" "+centerDist/4+" "+Math.round(Math.atan2((coords[3]-coords[1]),(coords[2]-coords[0]))*180/Math.PI)+" "+0+" "+0+coords[2]+" "+coords[3]);
+				
+				document.getElementById('worldMap').append(arrow);
+				
 				document.getElementsByClassName('target')[0].classList.remove('target');
 				document.getElementsByClassName('alerted')[0].classList.remove('alerted');
 				document.getElementById(target).classList.add('ennemy');
@@ -102,6 +114,7 @@
 		$('.ennemy').each(function(){$(this).removeClass('target');$(this).addClass('destroyed');});
 		$('.active').each(function(){$(this).removeClass('active');$(this).addClass('empty');});
 		$('.activatedRange').each(function(){$(this).remove();});
+		$('.targetArrow').each(function(){$(this).remove();});
 		$("#targets").empty();
 		displayName();
 		displayRange();

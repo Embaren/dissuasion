@@ -117,6 +117,21 @@ button{
 	stroke: #00ff00;
 	stroke-opacity: 0.5;
 }
+.targetArrow {
+	pointer-events : none;
+	marker-end : url(#arrowhead);
+	stroke: #00ff00;
+	stroke-opacity: 0.5;
+	stroke-width:8;
+}
+#arrowhead {
+	fill:#00ff00;
+	fill-opacity: 0.5;
+	stroke: #00ff00;
+	stroke-opacity: 0.5;
+	stroke-linejoin:round;
+	
+}
 path:hover{
 	fill: #cccccc;
 	fill-opacity: 0.5;
