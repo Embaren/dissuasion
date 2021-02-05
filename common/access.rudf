@@ -73,7 +73,6 @@
 			
 			countryBox=document.getElementsByClassName('target')[0].getBBox();
 			coords=[(objectBox.x+objectBox.width/2+groupTransform.e),(objectBox.y+objectBox.height/2+groupTransform.f),(countryBox.x+countryBox.width/2),(countryBox.y+countryBox.height/2)];
-			
 			centerDist=Math.sqrt((coords[0]-coords[2])**2+(coords[1]-coords[3])**2);
 			
 			tg=document.getElementsByClassName('target')[0];
