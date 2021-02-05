@@ -114,7 +114,19 @@
 		$('.ennemy').each(function(){$(this).removeClass('target');$(this).addClass('destroyed');});
 		$('.active').each(function(){$(this).removeClass('active');$(this).addClass('empty');});
 		$('.activatedRange').each(function(){$(this).remove();});
-		$('.targetArrow').each(function(){$(this).remove();});
+		
+		$('.targetArrow').each(function(){
+			coords=$(this)[0].getPointAtLength($(this)[0].getTotalLength());
+			image=document.createElementNS("http://www.w3.org/2000/svg",'image');
+			image.setAttribute('href',"ressources/nuke.gif");
+			image.setAttribute('x',(Math.round(coords.x)-40));
+			image.setAttribute('y',(Math.round(coords.y)-40));
+			image.setAttribute('width','80');
+			image.setAttribute('height','80');
+			document.getElementById('worldMap').appendChild(image);
+			$(this).remove();
+		});
+		
 		$("#targets").empty();
 		displayName();
 		displayRange();
