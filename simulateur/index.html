@@ -1,0 +1,249 @@
+<!doctype html>
+
+
+<html lang="fr">
+<head>
+	<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
+	<meta charset="utf-8">
+	<meta name="description" content="Dissuasion, prévention, riposte: mettez en oeuvre sur DISSUASION.RUDF.EU toutes les capacités de l'arme nucléaire">
+	<meta name="author" content="Emile Barbier--Renard">	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="stylesheet" href="/css/style-dissuasion.css"><style></style>
+	<title>Simulation | Arme nucléaire</title>
+</head>
+<body>
+	<h1>SIMULATION NUCLEAIRE STRATEGIQUE</h1>
+<div id="content">
+	<div id="map-div">
+	</div>
+	<div id="wrapper">
+		<div class="selection">
+			<div id="selectParameters">
+				<div class="text">
+					<text><b>PAYS</b></text><text class="label" id="country-name" x="10" y="390">Aucun pays sélectionné</text>
+				</div>
+				<div class="text">
+					<text><b>LANCEUR</b></text><text class="label" id="launcher-name" x="10" y="390">Aucun lanceur sélectionné</text>
+				</div>
+			</div>
+			<button id="selectTarget type="button" onClick="addTarget()">Programmer le tir</button>
+		</div>
+		<div id="ennemies">
+			<text><b>PAYS CIBLES</b></text>
+			<ul id="targets">
+			</ul>
+			<button id="confirmTargets" type="button" onClick="hitTargets()">Confirmer la frappe</button>
+		</div>
+	</div>
+</div>
+<script>
+	$.get("/ressources/world.rudf", function (data) {
+		$("#map-div").prepend(data);
+	});
+	var target='';
+	var launcher=['',0];
+	function displayName(id='') {
+		if (id==''){
+			try{
+				document.getElementById('country-name').firstChild.data = document.getElementById(target).dataset.name;
+			}
+			catch{
+				document.getElementById('country-name').firstChild.data = "Aucun pays sélectionné";
+			}
+		}
+		else{
+			if (document.getElementById(id).classList.contains('destroyed')){
+				document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name + ' (Inhabitable)';
+			}
+			else{
+				document.getElementById('country-name').firstChild.data = document.getElementById(id).dataset.name;
+			}
+		}
+	}
+	function setTarget(id) {
+		try{
+			document.getElementsByClassName('target')[0].classList.remove('target');
+		}
+		catch{}
+		if (document.getElementById(id).classList.contains('ennemy')||document.getElementById(id).classList.contains('destroyed')){
+			target=''
+		}
+		else{
+			document.getElementById(id).classList.add('target');
+			target=id;
+		}
+		displayName();
+	}
+	function addTarget() {
+		if (target!='' && launcher[0]!=''){
+			
+			objectBox = document.getElementById(launcher[0]).getBBox();
+			try{
+				groupTransform = document.getElementById(launcher[0]).parentNode.transform.baseVal[0].matrix;
+			}
+			catch{
+				groupTransform = { e:0,f:0}
+			}
+			
+			countryBox=document.getElementsByClassName('target')[0].getBBox();
+			coords=[(objectBox.x+objectBox.width/2+groupTransform.e),(objectBox.y+objectBox.height/2+groupTransform.f),(countryBox.x+countryBox.width/2),(countryBox.y+countryBox.height/2)];
+			centerDist=Math.sqrt((coords[0]-coords[2])**2+(coords[1]-coords[3])**2);
+			
+			tg=document.getElementsByClassName('target')[0];
+			minDist=Infinity;
+			
+			
+			for (let j=1; j<tg.getTotalLength();j++){
+				minDist=Math.min(minDist,Math.sqrt((coords[0]-tg.getPointAtLength(j).x)**2+(coords[1]-tg.getPointAtLength(j).y)**2));
+				if (minDist<=launcher[1]){
+					break;
+				}
+			}
+			if (minDist<=launcher[1]){
+				
+				arrow = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				arrow.setAttribute("class", "targetArrow");
+				
+				if (coords[2]>coords[0]){
+					direction=1;
+				}
+				else{
+					direction=0;
+				}
+				arrow.setAttribute("d","M"+coords[0]+" "+coords[1]+" A " + centerDist/2+" "+centerDist/4+" "+Math.round(Math.atan2((coords[3]-coords[1]),(coords[2]-coords[0]))*180/Math.PI)+" "+0+" "+direction+coords[2]+" "+coords[3]);
+				
+				document.getElementById('worldMap').append(arrow);
+				
+				document.getElementsByClassName('target')[0].classList.remove('target');
+				document.getElementsByClassName('alerted')[0].classList.remove('alerted');
+				document.getElementById(target).classList.add('ennemy');
+				document.getElementById(launcher[0]).classList.add('active');
+				$("#targets").append('<li>'+document.getElementById(target).dataset.name+'</li>');
+				$('#alertedRange').each(function(){$(this).removeAttr('id');$(this).addClass('activatedRange');});
+				target='';
+				launcher=['',0];
+				displayName();
+				displayRange();
+			}
+			
+		}
+	}
+	function hitTargets() {
+		$('.ennemy').each(function(){$(this).removeClass('target');$(this).addClass('destroyed');});
+		$('.active').each(function(){$(this).removeClass('active');$(this).addClass('empty');});
+		$('.activatedRange').each(function(){$(this).remove();});
+		
+		$('.targetArrow').each(function(){
+			coords=$(this)[0].getPointAtLength($(this)[0].getTotalLength());
+			image=document.createElementNS("http://www.w3.org/2000/svg",'image');
+			image.setAttribute('href',"/ressources/nuke.gif");
+			image.setAttribute('x',(Math.round(coords.x)-40));
+			image.setAttribute('y',(Math.round(coords.y)-40));
+			image.setAttribute('width','80');
+			image.setAttribute('height','80');
+			document.getElementById('worldMap').appendChild(image);
+			$(this).remove();
+		});
+		
+		$("#targets").empty();
+		displayName();
+		displayRange();
+	}
+	function displayRange(type='',id){
+		groupId='';
+		objectId='';
+		r='0';
+		switch (type){
+			case '':
+				try{
+					document.getElementById('range').remove();
+				}
+				catch{
+				}
+				try{
+					document.getElementById('launcher-name').firstChild.data = document.getElementById(launcher[0]).dataset.name;
+				}
+				catch{
+					document.getElementById('launcher-name').firstChild.data = "Aucun lanceur sélectionné";
+				}
+				return 0;
+			case 'sub' :
+				groupId='sub'+id;
+				objectId='submarine'+id;
+				r="250";
+				break;
+			case 'AC' :
+				groupId='AC'+id;
+				objectId='aircraftCarrier'+id;
+				r="400";
+				break;
+			case 'tu' :
+				groupId='tu'+id;
+				objectId='tube'+id;
+				r="300";
+				break;
+		}
+		
+		if (document.getElementById(objectId).classList.contains('empty')){
+			document.getElementById('launcher-name').firstChild.data = document.getElementById(objectId).dataset.name + " (A court d'ogives)";
+			return 0;
+		}
+		else{
+			document.getElementById('launcher-name').firstChild.data = document.getElementById(objectId).dataset.name;
+		}
+		
+		objectBox = document.getElementById(objectId).getBBox();
+		try{
+			groupTransform = document.getElementById(groupId).transform.baseVal[0].matrix;
+		}
+		catch{
+			groupTransform = { e:0,f:0}
+		}
+		range = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		range.setAttribute("id", "range");
+		range.setAttribute("cx", Math.round((objectBox.x+objectBox.width/2+groupTransform.e)).toString());
+		range.setAttribute("cy", Math.round((objectBox.y+objectBox.height/2+groupTransform.f)).toString());
+		range.setAttribute("r", r);
+		document.getElementById('worldMap').insertBefore(range,document.getElementById('submarines'));
+	}
+	
+	function setLauncher(type,id) {
+		try{
+			document.getElementsByClassName('alerted')[0].classList.remove('alerted');
+		}
+		catch{}
+		
+		try{
+			document.getElementById('alertedRange').remove();
+		}
+		catch{}
+		
+		switch (type){
+			case 'sub' :
+				objectId='submarine'+id;
+				r="250";
+				break;
+			case 'AC' :
+				objectId='aircraftCarrier'+id;
+				r="400";
+				break;
+			case 'tu' :
+				objectId='tube'+id;
+				r="300";
+				break;
+		}
+		
+		
+		if (document.getElementById(objectId).classList.contains('active')||document.getElementById(objectId).classList.contains('empty')){
+			launcher=['',0];
+		}
+		else{
+			document.getElementById(objectId).classList.add('alerted');
+			launcher=[objectId,r];
+			$('#range').each(function(){$(this).removeAttr('id');$(this).attr('id','alertedRange');});
+		}
+		displayRange();
+	}
+</script>
+</body>
+</html>
